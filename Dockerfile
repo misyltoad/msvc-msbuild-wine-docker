@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/London
-ENV WINEDEBUG=-all
+#ENV WINEDEBUG=-all
 
 RUN dpkg --add-architecture i386
 
@@ -25,11 +25,11 @@ RUN winetricks -f -q dotnet472
 
 WORKDIR /msvc-temp
 RUN wget https://aka.ms/vs/17/release/vs_buildtools.exe
+
 RUN wget https://aka.ms/vs/17/release/installer
 RUN mv installer installer.zip
-RUN unzip installer.zip -d installer_data
 RUN mkdir -p "$HOME/.wine/drive_c/Program Files (x86)/Microsoft Visual Studio/Installer"
-RUN cp -r installer_data/Contents/* "$HOME/.wine/drive_c/Program Files (x86)/Microsoft Visual Studio/Installer"
+RUN unzip installer.zip "Contents/*" -d "$HOME/.wine/drive_c/Program Files (x86)/Microsoft Visual Studio/Installer"
 
 RUN mkdir -p /tmp/.X11-unix
 
