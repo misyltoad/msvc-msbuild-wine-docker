@@ -3,6 +3,10 @@ FROM ubuntu:20.04
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/London
 #ENV WINEDEBUG=-all
+ENV WINEPREFIX=/opt/msvc/pfx
+
+RUN mkdir -p "$WINEPREFIX"
+RUN chmod -R 777 "/opt/msvc"
 
 RUN dpkg --add-architecture i386
 
@@ -28,10 +32,13 @@ RUN wget https://aka.ms/vs/17/release/vs_buildtools.exe
 
 RUN wget https://aka.ms/vs/17/release/installer
 RUN mv installer installer.zip
-RUN mkdir -p "$HOME/.wine/drive_c/Program Files (x86)/Microsoft Visual Studio/Installer"
-RUN unzip installer.zip "Contents/*" -d "$HOME/.wine/drive_c/Program Files (x86)/Microsoft Visual Studio/Installer"
+RUN mkdir -p "$WINEPREFIX/drive_c/Program Files (x86)/Microsoft Visual Studio/Installer"
+RUN unzip installer.zip "Contents/*" -d "$WINEPREFIX/drive_c/Program Files (x86)/Microsoft Visual Studio/Installer"
 
 RUN mkdir -p /tmp/.X11-unix
 
 RUN XDG_RUNTIME_DIR="$HOME" weston --use-pixman --backend=headless-backend.so --xwayland & \
     DISPLAY=:0 wine vs_buildtools --wait --quiet --includeRecommended --includeOptional --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Workload.MSBuildTools || true
+
+RUN rm -rf /msvc-temp
+WORKDIR /
