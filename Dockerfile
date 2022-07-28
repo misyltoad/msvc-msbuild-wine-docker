@@ -38,7 +38,7 @@ RUN unzip installer.zip "Contents/*" -d "$WINEPREFIX/drive_c/Program Files (x86)
 RUN mkdir -p /tmp/.X11-unix
 
 RUN XDG_RUNTIME_DIR="$HOME" weston --use-pixman --backend=headless-backend.so --xwayland & \
-    DISPLAY=:0 wine vs_buildtools --wait --quiet --includeRecommended --includeOptional --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Workload.MSBuildTools || true
+    DISPLAY=:0 wine vs_buildtools --wait --quiet --includeRecommended --includeOptional --add Microsoft.VisualStudio.Component.Windows11SDK.22000 --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Workload.MSBuildTools || true
 
 RUN rm -rf /msvc-temp
 WORKDIR /
