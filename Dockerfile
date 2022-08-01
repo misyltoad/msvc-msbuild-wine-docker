@@ -40,5 +40,14 @@ RUN mkdir -p /tmp/.X11-unix
 RUN XDG_RUNTIME_DIR="$HOME" weston --use-pixman --backend=headless-backend.so --xwayland & \
     DISPLAY=:0 wine vs_buildtools --wait --quiet --includeRecommended --includeOptional --add Microsoft.VisualStudio.Component.Windows11SDK.22000 --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Workload.MSBuildTools || true
 
+RUN wget https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe
+RUN XDG_RUNTIME_DIR="$HOME" weston --use-pixman --backend=headless-backend.so --xwayland & \
+    DISPLAY=:1 wine DXSDK_Jun10.exe /S /O /U
+
+# Ensure Win11 SDK is installed because sometimes vs buildtools just decide not to lol
+RUN wget https://download.microsoft.com/download/f/6/7/f673df4b-4df9-4e1c-b6ce-2e6b4236c802/windowssdk/winsdksetup.exe
+RUN XDG_RUNTIME_DIR="$HOME" weston --use-pixman --backend=headless-backend.so --xwayland & \
+    DISPLAY=:2 wine winsdksetup.exe /features + /quiet /norestart
+
 RUN rm -rf /msvc-temp
 WORKDIR /
